@@ -613,7 +613,7 @@ legend_html = '''
 <div style="position: fixed; bottom: 50px; right: 50px; width: 220px; 
      background-color: white; border:2px solid grey; z-index:9999; 
      font-size:14px; padding: 10px">
-     <p style="margin: 0 0 10px 0; font-weight: bold;">TOPSIS Ranking</p>
+     <p style="margin: 0 0 10px 0; font-weight: bold;">Site Ranking</p>
      <p style="margin: 5px 0;"><i style="background:#cb0909; width: 18px; height: 18px; 
         float: left; margin-right: 8px; border-radius: 2px;"></i>Top 10 Sites</p>
      <p style="margin: 5px 0;"><i style="background:#ea5312; width: 18px; height: 18px; 
