@@ -1,0 +1,146 @@
+"district_id","district_name","class","cell_count","total_cells","proportion","Area_km2"
+1,"Regional District of Alberni-Clayoquot","Class 1",48503,773574,0.0626998839154367,43.65
+1,"Regional District of Alberni-Clayoquot","Class 2",434438,773574,0.561598502534987,390.99
+1,"Regional District of Alberni-Clayoquot","Class 3",236099,773574,0.305205448993891,212.49
+1,"Regional District of Alberni-Clayoquot","Class 4",53149,773574,0.0687057734618795,47.83
+1,"Regional District of Alberni-Clayoquot","Class 5",1385,773574,0.00179039109380615,1.25
+2,"Comox Valley Regional District","Class 1",6241,365185,0.0170899680983611,5.62
+2,"Comox Valley Regional District","Class 2",155711,365185,0.42638936429481,140.14
+2,"Comox Valley Regional District","Class 3",155663,365185,0.426257924065884,140.1
+2,"Comox Valley Regional District","Class 4",45803,365185,0.125424100113641,41.22
+2,"Comox Valley Regional District","Class 5",1767,365185,0.00483864342730397,1.59
+3,"Cowichan Valley Regional District","Class 1",11655,676007,0.0172409457298519,10.49
+3,"Cowichan Valley Regional District","Class 2",321999,676007,0.476324949297862,289.8
+3,"Cowichan Valley Regional District","Class 3",257363,676007,0.380710554772362,231.63
+3,"Cowichan Valley Regional District","Class 4",81752,676007,0.120933658970987,73.58
+3,"Cowichan Valley Regional District","Class 5",3238,676007,0.00478989122893698,2.91
+4,"Regional District of Nanaimo","Class 1",6483,481749,0.0134572152718532,5.83
+4,"Regional District of Nanaimo","Class 2",168229,481749,0.349204668821316,151.41
+4,"Regional District of Nanaimo","Class 3",216842,481749,0.450114063547615,195.16
+4,"Regional District of Nanaimo","Class 4",86030,481749,0.178578471361643,77.43
+4,"Regional District of Nanaimo","Class 5",4165,481749,0.00864558099757342,3.75
+5,"qathet Regional District","Class 1",666826,1081410,0.616626441405203,600.14
+5,"qathet Regional District","Class 2",327860,1081410,0.303178258014999,295.07
+5,"qathet Regional District","Class 3",67909,1081410,0.0627967190982144,61.12
+5,"qathet Regional District","Class 4",17976,1081410,0.0166227425305851,16.18
+5,"qathet Regional District","Class 5",839,1081410,0.000775838950999158,0.76
+6,"Strathcona Regional District","Class 1",1365349,3181353,0.429172430723658,1228.81
+6,"Strathcona Regional District","Class 2",1575417,3181353,0.495203455888108,1417.87
+6,"Strathcona Regional District","Class 3",193244,3181353,0.0607427091555071,173.92
+6,"Strathcona Regional District","Class 4",46647,3181353,0.0146626293907026,41.98
+6,"Strathcona Regional District","Class 5",696,3181353,0.000218774842024761,0.63
+7,"Regional District of Bulkley-Nechako","Class 1",3806505,23389177,0.162746427546382,3425.84
+7,"Regional District of Bulkley-Nechako","Class 2",15302368,23389177,0.654249955011243,13772.06
+7,"Regional District of Bulkley-Nechako","Class 3",4023706,23389177,0.172032816716894,3621.32
+7,"Regional District of Bulkley-Nechako","Class 4",251115,23389177,0.0107363760597476,226
+7,"Regional District of Bulkley-Nechako","Class 5",5483,23389177,0.000234424665733215,4.93
+8,"Cariboo Regional District","Class 1",1193108,23491616,0.0507886728609901,1073.79
+8,"Cariboo Regional District","Class 2",13669349,23491616,0.58188202122834,12302.35
+8,"Cariboo Regional District","Class 3",8381235,23491616,0.356775583254894,7543.07
+8,"Cariboo Regional District","Class 4",231728,23491616,0.00986428519860021,208.55
+8,"Cariboo Regional District","Class 5",16196,23491616,0.000689437457176211,14.58
+9,"Regional District of Fraser-Fort George","Class 1",3808525,12086930,0.315094486358405,3427.66
+9,"Regional District of Fraser-Fort George","Class 2",6505892,12086930,0.538258432869223,5855.27
+9,"Regional District of Fraser-Fort George","Class 3",1599573,12086930,0.132339063765572,1439.61
+9,"Regional District of Fraser-Fort George","Class 4",167704,12086930,0.0138748218116594,150.93
+9,"Regional District of Fraser-Fort George","Class 5",5236,12086930,0.000433195195140536,4.71
+10,"Regional District of Kitimat-Stikine","Class 1",21202601,34068346,0.622354868651387,19082.25
+10,"Regional District of Kitimat-Stikine","Class 2",12550809,34068346,0.368400890374895,11295.67
+10,"Regional District of Kitimat-Stikine","Class 3",275047,34068346,0.00807338871103399,247.54
+10,"Regional District of Kitimat-Stikine","Class 4",39472,34068346,0.00115861216156487,35.52
+10,"Regional District of Kitimat-Stikine","Class 5",417,34068346,1.22401011190857e-05,0.38
+11,"Peace River Regional District","Class 1",12667482,29857235,0.424268422712284,11400.68
+11,"Peace River Regional District","Class 2",11453085,29857235,0.383594964503578,10307.73
+11,"Peace River Regional District","Class 3",5376649,29857235,0.180078597365094,4838.96
+11,"Peace River Regional District","Class 4",343228,29857235,0.0114956391641758,308.9
+11,"Peace River Regional District","Class 5",16791,29857235,0.000562376254867539,15.11
+12,"Central Coast Regional District","Class 1",3835401,5473443,0.700729138861956,3451.84
+12,"Central Coast Regional District","Class 2",1473727,5473443,0.269250451680962,1326.35
+12,"Central Coast Regional District","Class 3",164315,5473443,0.0300204094570821,147.88
+12,"Central Coast Regional District","Class 4",0,5473443,0,0
+12,"Central Coast Regional District","Class 5",0,5473443,0,0
+13,"Stikine Region (Unincorporated)","Class 1",24224825,46719210,0.518519576850722,21802.24
+13,"Stikine Region (Unincorporated)","Class 2",22015258,46719210,0.471224962922104,19813.64
+13,"Stikine Region (Unincorporated)","Class 3",479126,46719210,0.0102554388227027,431.21
+13,"Stikine Region (Unincorporated)","Class 4",1,46719210,2.14044715225279e-08,0
+13,"Stikine Region (Unincorporated)","Class 5",0,46719210,0,0
+14,"Metro Vancouver Regional District","Class 1",12036,375177,0.0320808578351018,10.83
+14,"Metro Vancouver Regional District","Class 2",44723,375177,0.119205068540982,40.25
+14,"Metro Vancouver Regional District","Class 3",105866,375177,0.282176146192331,95.28
+14,"Metro Vancouver Regional District","Class 4",194555,375177,0.51856856896878,175.1
+14,"Metro Vancouver Regional District","Class 5",17997,375177,0.0479693584628056,16.2
+15,"Capital Regional District","Class 1",1287,282802,0.00455088719315988,1.16
+15,"Capital Regional District","Class 2",101300,282802,0.358201144263478,91.17
+15,"Capital Regional District","Class 3",139925,282802,0.494780800701551,125.93
+15,"Capital Regional District","Class 4",37217,282802,0.131600908055813,33.5
+15,"Capital Regional District","Class 5",3073,282802,0.0108662597859987,2.77
+16,"Squamish-Lillooet Regional District","Class 1",500933,3465481,0.144549342501084,450.84
+16,"Squamish-Lillooet Regional District","Class 2",2113297,3465481,0.609813471780685,1901.96
+16,"Squamish-Lillooet Regional District","Class 3",755651,3465481,0.218050827576316,680.08
+16,"Squamish-Lillooet Regional District","Class 4",94512,3465481,0.0272724046099228,85.06
+16,"Squamish-Lillooet Regional District","Class 5",1088,3465481,0.000313953531991663,0.98
+17,"Thompson-Nicola Regional District","Class 1",633034,12422199,0.0509598984849623,569.73
+17,"Thompson-Nicola Regional District","Class 2",3128766,12422199,0.251868932384677,2815.88
+17,"Thompson-Nicola Regional District","Class 3",7742685,12422199,0.623294233170794,6968.38
+17,"Thompson-Nicola Regional District","Class 4",888517,12422199,0.0715265469503427,799.66
+17,"Thompson-Nicola Regional District","Class 5",29197,12422199,0.00235038900922453,26.28
+18,"Regional District of Mount Waddington","Class 1",2745859,4574316,0.600277505970292,2471.26
+18,"Regional District of Mount Waddington","Class 2",1717431,4574316,0.375450887083446,1545.68
+18,"Regional District of Mount Waddington","Class 3",104587,4574316,0.0228639647982343,94.13
+18,"Regional District of Mount Waddington","Class 4",6437,4574316,0.00140720492418976,5.79
+18,"Regional District of Mount Waddington","Class 5",2,4574316,4.37223838493012e-07,0
+19,"Regional District of Central Kootenay","Class 1",1267493,6419770,0.197435889447753,1140.74
+19,"Regional District of Central Kootenay","Class 2",3573251,6419770,0.556601093185581,3215.91
+19,"Regional District of Central Kootenay","Class 3",1512782,6419770,0.235644267629526,1361.5
+19,"Regional District of Central Kootenay","Class 4",65789,6419770,0.010247874923868,59.21
+19,"Regional District of Central Kootenay","Class 5",455,6419770,7.08748132721266e-05,0.41
+20,"Columbia Shuswap Regional District","Class 1",3339703,10206427,0.327215684783715,3005.72
+20,"Columbia Shuswap Regional District","Class 2",5904459,10206427,0.57850401516613,5313.99
+20,"Columbia Shuswap Regional District","Class 3",890246,10206427,0.0872240598987285,801.22
+20,"Columbia Shuswap Regional District","Class 4",70881,10206427,0.00694474177888109,63.79
+20,"Columbia Shuswap Regional District","Class 5",1138,10206427,0.000111498372545064,1.02
+21,"Regional District of East Kootenay","Class 1",978360,9619375,0.101707231498928,880.52
+21,"Regional District of East Kootenay","Class 2",4922400,9619375,0.511717237346501,4430.14
+21,"Regional District of East Kootenay","Class 3",3052478,9619375,0.317326021700994,2747.22
+21,"Regional District of East Kootenay","Class 4",633925,9619375,0.0659008511467741,570.53
+21,"Regional District of East Kootenay","Class 5",32212,9619375,0.00334865830680268,28.99
+22,"Regional District of Kootenay Boundary","Class 1",21891,2614856,0.00837178031983406,19.7
+22,"Regional District of Kootenay Boundary","Class 2",1069019,2614856,0.408825189608912,962.11
+22,"Regional District of Kootenay Boundary","Class 3",1451613,2614856,0.555140703732825,1306.45
+22,"Regional District of Kootenay Boundary","Class 4",71061,2614856,0.0271758750768685,63.95
+22,"Regional District of Kootenay Boundary","Class 5",1272,2614856,0.000486451261560866,1.14
+23,"Regional District of North Okanagan","Class 1",115240,2070182,0.0556666032261898,103.72
+23,"Regional District of North Okanagan","Class 2",1027932,2070182,0.496541849943628,925.13
+23,"Regional District of North Okanagan","Class 3",779572,2070182,0.376571721713357,701.61
+23,"Regional District of North Okanagan","Class 4",141512,2070182,0.0683572748676203,127.36
+23,"Regional District of North Okanagan","Class 5",5926,2070182,0.00286255024920514,5.33
+24,"Regional District of Central Okanagan","Class 1",4274,934653,0.00457282007333203,3.85
+24,"Regional District of Central Okanagan","Class 2",166579,934653,0.178225501870748,149.92
+24,"Regional District of Central Okanagan","Class 3",711066,934653,0.760780738948037,639.96
+24,"Regional District of Central Okanagan","Class 4",52481,934653,0.0561502504137899,47.23
+24,"Regional District of Central Okanagan","Class 5",253,934653,0.000270688694092888,0.23
+25,"Regional District of Okanagan-Similkameen","Class 1",19530,4297000,0.00454503141726786,17.58
+25,"Regional District of Okanagan-Similkameen","Class 2",665269,4297000,0.15482173609495,598.74
+25,"Regional District of Okanagan-Similkameen","Class 3",3501383,4297000,0.814843611822202,3151.23
+25,"Regional District of Okanagan-Similkameen","Class 4",110818,4297000,0.0257896206655806,99.74
+25,"Regional District of Okanagan-Similkameen","Class 5",0,4297000,0,0
+26,"Sunshine Coast Regional District","Class 1",265044,520447,0.509262230351986,238.54
+26,"Sunshine Coast Regional District","Class 2",187152,520447,0.359598575839615,168.44
+26,"Sunshine Coast Regional District","Class 3",50731,520447,0.0974758236669632,45.66
+26,"Sunshine Coast Regional District","Class 4",16799,520447,0.0322780225460037,15.12
+26,"Sunshine Coast Regional District","Class 5",721,520447,0.00138534759543239,0.65
+27,"Fraser Valley Regional District","Class 1",376655,1345204,0.279998424030853,338.99
+27,"Fraser Valley Regional District","Class 2",459256,1345204,0.341402493599484,413.33
+27,"Fraser Valley Regional District","Class 3",269258,1345204,0.200161462499368,242.33
+27,"Fraser Valley Regional District","Class 4",233308,1345204,0.173436891356255,209.98
+27,"Fraser Valley Regional District","Class 5",6727,1345204,0.00500072851403951,6.05
+28,"North Coast Regional District","Class 1",1702398,3085918,0.551666635341574,1532.15
+28,"North Coast Regional District","Class 2",1305453,3085918,0.423035544042324,1174.9
+28,"North Coast Regional District","Class 3",74442,3085918,0.0241231296489408,67
+28,"North Coast Regional District","Class 4",3625,3085918,0.00117469096716115,3.26
+28,"North Coast Regional District","Class 5",0,3085918,0,0
+29,"Northern Rockies Regional Municipality","Class 1",5135276,14019305,0.366300326585376,4621.73
+29,"Northern Rockies Regional Municipality","Class 2",7841369,14019305,0.559326514402818,7057.2
+29,"Northern Rockies Regional Municipality","Class 3",1025636,14019305,0.0731588334799764,923.07
+29,"Northern Rockies Regional Municipality","Class 4",16207,14019305,0.0011560487484936,14.59
+29,"Northern Rockies Regional Municipality","Class 5",817,14019305,5.82767833355505e-05,0.74

@@ -1,0 +1,598 @@
+---
+title: "Solar Suitability Analysis in British Columbia"
+format: 
+  dashboard:
+    logo: images/UBC_logo.png
+    scrolling: true
+    include-after-body: _footer.html
+---
+
+# Geographical Potential
+
+## Row {height="auto"}
+
+### Column {width="46%"}
+
+**Project Overview**
+
+As electricity demand grows across British Columbia, more renewable energy installations need to be developed to support a resilient, diversified, low-carbon future. In light of this challenge, a site suitability analysis was undergone to create a province-wide screening tool that determines the most optimal locations for solar PV development.
+
+The [Analytic Hierarchy Process (AHP)](https://www.sciencedirect.com/science/article/pii/0270025587904738) was used to combine heterogeneous input criteria into a single, comprehensive suitability model. Through expert consultation with professionals across academia, policy, and industry, weights were assigned to each criteria representing their relative importance in the siting process. The following table outlines the criteria, definitions, and relative weights used to rank the province's landscape, providing a rigorous, data-driven foundation for our site selection analysis.
+
+Explore the results below to see how the province's land base was classified into suitability classes, and how these classes are distributed across the province's regional districts.
+
+### Column {width="54%"}
+
+```{python}
+#| echo: false
+
+import pandas as pd
+from great_tables import GT
+from great_tables import style
+from great_tables import loc
+
+df = pd.DataFrame({
+    "Criteria": [
+        "Proximity to the Grid",
+        "Global Tilted Irradiance",
+        "Proximity to Demand Centers",
+        "Proximity to Major Roads",
+        "Ground Aspect",
+        "Ground Slope",
+    ],
+    "Impact/Definition": [
+        "High-voltage power infrastructure is expensive to build. The closer the site is to existing substations, the more profitable it is.",
+        "The solar energy hitting an optimally tilted solar panel.",
+        "Producing power closer to where it is used reduces energy wasted during transport.",
+        "Arterial roads are needed to transport solar panels and structural components. Siting close to roads minimizes transit times and reduces construction costs.",
+        "The direction a hill faces. In the Northern Hemisphere, south-facing slopes receive more insolation.",
+        "Flat land is less expensive to build on and steeper land causes panels to shadow one another.",
+    ],
+    "Weight": ["30.2%", "26.3%", "14.4%", "11.2%", "9.3%", "8.5%"],
+})
+
+table = (
+    GT(df)
+    # Bold column headers
+    .tab_style( 
+        style=style.text(weight="bold"),
+        locations=loc.column_labels()
+    )
+    # Center column headers 
+    .tab_style(
+        style=style.text(align="center"),
+        locations=loc.column_labels()
+    )
+    # Fill column headers with a light blue color
+    .tab_style(
+        style=style.fill(color="#5b89aad2"),
+        locations=loc.column_labels()
+    )
+)
+
+table
+```
+
+## Row {height="auto"}
+
+```{python}
+#| title: "Suitability Map"
+#| echo: false
+
+import folium
+import leafmap.foliumap as leafmap
+import requests
+import json
+
+# Point directly to the media URL where Git LFS hosts the binary file on main
+cog_url = "https://media.githubusercontent.com/media/kenzthom/SolarModel_Dash/main/data/final_suitability_cog.tif"
+titiler_endpoint = "https://titiler.xyz"
+
+custom_colormap = {
+    0: [105, 105, 105, 255],  # #6969692d
+    1: [255, 255, 178, 255],  # #FFFFB2
+    2: [254, 204, 92, 255],   # #FECC5C
+    3: [253, 141, 60, 255],   # #FD8D3C
+    4: [240, 59, 32, 255],    # #F03B20
+    5: [189, 0, 38, 255]      # #BD0026
+}
+
+# Ask TiTiler to build the tile URL template using your exact color palette
+r = requests.get(
+    f"{titiler_endpoint}/cog/WebMercatorQuad/tilejson.json",
+    params={
+        "url": cog_url,
+        "colormap": json.dumps(custom_colormap),
+        "nodata": "nan",
+    },
+).json()
+
+tile_url = r["tiles"][0]
+
+m = leafmap.Map(center=[54.000, -128.000], zoom=5)
+m.add_basemap("HYBRID") 
+
+# Add the TiTiler raster tile layer
+_ = folium.TileLayer(
+    tiles=tile_url,
+    attr="Suitability Map",
+    name="Suitability Map",
+    overlay=True,
+    control=True,
+).add_to(m)
+
+# Add Regional Districts from GitHub
+rd_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/regional_districts_with_stats.geojson" 
+rd = requests.get(rd_url).json()
+
+# Define tooltip columns (District Name + your 5 suitability classes)
+suitability_cols = [
+    "Class 1",
+    "Class 2",
+    "Class 3",
+    "Class 4",
+    "Class 5",
+] 
+
+tooltip_aliases = [
+    "District:",
+    "Class 1 Area (km²):",
+    "Class 2 Area (km²):",
+    "Class 3 Area (km²):",
+    "Class 4 Area (km²):",
+    "Class 5 Area (km²):",
+]
+
+district_tooltip = folium.GeoJsonTooltip(
+    fields=["district_name"] + suitability_cols,
+    aliases=tooltip_aliases,
+    localize=True,
+    labels=True,
+    sticky=False,  
+)
+
+_ = folium.GeoJson(
+    rd,
+    name="Regional Districts",
+    style_function=lambda x: {
+        "fillColor": "grey",
+        "fillOpacity": 0.0, 
+        "color": "black",
+        "weight": 1.5,
+    },
+    tooltip=district_tooltip,  
+    control=True,
+).add_to(m)
+
+# Add Existing Solar Farms from GitHub
+renewables_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/renewable_energy_points.geojson"
+renewables = requests.get(renewables_url).json()
+
+solar_tooltip = folium.GeoJsonTooltip(
+    fields=["Project Na", "Capacity (", "Owner"],  # Match your exact GeoJSON property name
+    aliases=["Solar Farm Name:", "Capacity (MW):", "Owner:"],
+    localize=True,
+    labels=True,
+)
+
+_ = folium.GeoJson(
+    renewables,
+    name="Existing Solar Farms",
+    tooltip=solar_tooltip,  
+    control=True,
+).add_to(m)
+
+# Legend matching your full 0-5 classification scheme
+colors = ["#696969", "#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026"]
+labels = [
+    "0 - Restricted",
+    "1 - Least Suitable",
+    "2 - Less Suitable",
+    "3 - Moderately Suitable",
+    "4 - Suitable",
+    "5 - Very Suitable"
+]
+
+m.add_legend(title="Suitability Classes", colors=colors, labels=labels) 
+
+# Layer control
+_ = folium.LayerControl().add_to(m)
+
+m
+```
+
+## Row {height="auto"}
+
+### Column
+
+```{python}
+#| title: "BC Land Base by Suitability Class"
+#| echo: false
+#| message: false
+#| warning: false
+
+import pandas as pd
+import plotly.express as px
+
+suit_df = pd.read_csv('https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/suitability_summary.csv')
+suit_df.rename(columns={'class': 'value'}, inplace=True)
+suit_df['value'] = suit_df['value'].astype(str)
+
+class_labels = {
+    "0": "0 - Restricted", "1": "1 - Least Suitable", "2": "2 - Less Suitable",
+    "3": "3 - Moderately Suitable", "4": "4 - Suitable", "5": "5 - Very Suitable"
+}
+
+color_map = {
+    "0": "#696969", "1": "#FFFFB2", "2": "#FECC5C",
+    "3": "#FD8D3C", "4": "#F03B20", "5": "#BD0026"
+}
+
+suit_df["Suitability Class"] = suit_df["value"].map(class_labels)
+
+# Create and configure the bar chart
+fig = (px.bar(
+    suit_df,
+    x="Suitability Class",
+    y="area_km2",
+    color="value",    
+    color_discrete_map=color_map,
+    hover_data=['percent_of_total']
+)
+.update_traces(
+    hovertemplate="<b>%{x}</b><br>Area: %{y:,.0f} km²<br>Percent of BC: %{customdata[0]:.2f}%<extra></extra>"
+)
+.update_layout(
+    xaxis_title="Suitability Class",
+    yaxis_title="Area (km²)",
+    showlegend=False,
+    hovermode='x unified'
+))
+
+fig
+```
+
+### Column
+
+```{python}
+#| title: "Class 4 & 5 Suitability by Regional District"
+#| echo: false
+#| message: false
+#| warning: false
+
+import pandas as pd
+import plotly.express as px
+from IPython.display import display
+
+# Read the regional district CSV
+rd_df = pd.read_csv('https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/suitability_regDis.csv')
+
+# Filter to only Class 4 and 5
+df_high = rd_df[rd_df['class'].isin(['Class 4', 'Class 5'])].copy()
+
+# Group by district and sum area
+df_grouped = df_high.groupby('district_name')['Area_km2'].sum().reset_index()
+df_grouped = df_grouped.sort_values('Area_km2')
+
+# Create label alias so regional district is not repeated in every label 
+df_grouped["alias"] = (df_grouped["district_name"]
+    .str.replace('Regional District of', '')
+    .str.replace('Regional District', ''))
+
+# Create bar chart
+fig = (px.bar(
+    df_grouped,
+    y="alias",
+    x="Area_km2",
+    orientation='h',
+    labels={"alias": "Regional District", "Area_km2": "Area (km²)"},
+    color_discrete_sequence=['#e54608']
+)
+
+.update_traces(
+    hovertemplate="<b>%{y}</b><br>Area: %{x:,.0f} km²<extra></extra>"
+)
+
+.update_layout(
+    yaxis_title="Regional District",
+    xaxis_title="Area Class 4 & 5 (km²)",
+    showlegend=False,
+    hovermode='y unified'
+))
+
+fig
+```
+
+# Technical Potential
+
+## Row
+
+### Column {width ="75%"}
+
+**BC Solar Resource Overview**
+
+Technical potential translates suitable land area into electricity generation capabilities. We calculated installable capacity (GW) for each viable site using the parcel's area, a 23% panel efficiency, latitude-dependent Ground Cover Ratios, and a Packing Density Ratio. Annual energy yield draws from PVout (potential photovoltaic output) values for each site. Yield estimates are based on a 1 MW minimum production threshold, providing a realistic assessment of the province's solar energy potential ceiling. 
+
+Explore the map below to see the raw solar resource distribution across the province and total capacity and annual energy yield across BC's regional districts.
+
+```{python}
+#| title: "Photovoltaic Power Potential Map"
+#| echo: false
+
+import folium
+import leafmap.foliumap as leafmap
+import requests
+import json
+import leafmap.colormaps as cm
+from folium import LinearColormap
+
+# Point directly to the media URL where Git LFS hosts the binary file on main
+cog_url = "https://media.githubusercontent.com/media/kenzthom/SolarModel_Dash/main/data/pvout_cog.tif"
+titiler_endpoint = "https://titiler.xyz"
+
+# Ask TiTiler to build the tile URL template using your exact color palette
+r = requests.get(
+    f"{titiler_endpoint}/cog/WebMercatorQuad/tilejson.json",
+    params={
+        "url": cog_url,
+        "colormap_name": "ylorrd",
+        "reverse": "true",
+        "rescale": "400,1600",
+        "resampling": "bilinear", 
+        "nodata": "65535"}
+
+).json()
+
+tile_url = r["tiles"][0]
+
+m = leafmap.Map(center=[54.000, -128.000], zoom=5)
+m.add_basemap("HYBRID")
+
+# Add the TiTiler raster tile layer
+_ = folium.TileLayer(
+    tiles=tile_url,
+    attr="Photovoltaic Power Potential",
+    name="Photovoltaic Power Potential",
+    overlay=True,
+    control=True,
+).add_to(m)
+
+# Add colour ramp for pvout raster 
+colormap = LinearColormap(
+    colors=["#FFFFB2", "#FECC5C", "#FD8D3C", "#F03B20", "#BD0026"],
+    vmin=400,
+    vmax=1600,
+    caption="PV Potential (kWh/m²/year)",
+    text_color="white",
+    max_labels=5
+)
+
+_ = colormap.add_to(m)
+
+# Add Regional Districts from GitHub
+rd_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/regional_districts_with_stats.geojson" 
+rd = requests.get(rd_url).json()
+
+# Define tooltip columns (District Name + your 5 suitability classes)
+yield_cols = [
+    "total_capacity_GW",
+    "total_energy_TWh"]
+
+tooltip_aliases = [
+    "District:",
+    "Installable Capacity (GW):",
+    "Annual Energy Yield (TWh/year):"
+]
+
+district_tooltip = folium.GeoJsonTooltip(
+    fields=["district_name"] + yield_cols,
+    aliases=tooltip_aliases,
+    localize=True,
+    labels=True,
+    sticky=False,  
+)
+
+_ = folium.GeoJson(
+    rd,
+    name="Regional Districts",
+    style_function=lambda x: {
+        "fillColor": "grey",
+        "fillOpacity": 0.0, 
+        "color": "black",
+        "weight": 1.5,
+    },
+    tooltip=district_tooltip,  
+    control=True,
+).add_to(m)
+
+# Add 2 MW sites within municipal boundaries 
+inside_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/inside_muni_2MW.geojson" 
+inside = requests.get(inside_url).json()
+
+_ = folium.GeoJson(
+    inside,
+    name="2MW Sites (Inside Municipal Boundaries)",
+    style_function=lambda x: {
+        "fillColor": "#004B28",
+        "fillOpacity": 0.9, 
+        "color": "black",
+        "weight": 1.0,
+    },
+    control=True,
+).add_to(m)
+
+# Add 100 MW sites outside of municipal boundaries
+outside_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/ouside_muni_100MW.geojson" 
+outside = requests.get(outside_url).json()
+
+_ = folium.GeoJson(
+    outside,
+    name="100MW Sites (Outside Municipal Boundaries)",
+    style_function=lambda x: {
+        "fillColor": "#A4E804",
+        "fillOpacity": 0.9, 
+        "color": "black",
+        "weight": 1.0,
+    },
+    control=True,
+).add_to(m)
+
+# Layer control
+_ = folium.LayerControl().add_to(m)
+
+m
+```
+
+### Column {width="25%"}
+
+```{python}
+#| content: valuebox  
+#| title: "Total area of suitable sites in BC (km²)"
+#| color: "#7DA1B0" 
+#| icon: "globe-americas"
+
+dict(value = 2844.4)
+```
+
+```{python}
+#| content: valuebox
+#| title: "Installable Capacity (GW)"
+#| color: "#5B7884" 
+#| icon: "sun-fill"
+
+import pandas as pd
+
+df = pd.read_csv("https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/RegDis_energy_summary.csv")
+
+total_capacity_GW = df["total_capacity_GW"].sum()
+
+dict(value = f"{total_capacity_GW:,.1f}")
+```
+
+```{python}
+#| content: valuebox
+#| title: "Annual Energy Yield (TWh/year)"
+#| color: "#7D7F80" 
+#| icon: "lightning-fill"
+
+import pandas as pd
+
+df = pd.read_csv("https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/RegDis_energy_summary.csv")
+
+total_energy = df["total_energy_TWh"].sum()
+
+dict(value = f"{total_energy:.1f}")
+```
+
+# Case Study: Thompson-Nicola
+
+## Row {height="auto"}
+
+**Ranking Sites with TOPSIS**
+
+TOPSIS - Technique for Order of Preference by Similarity to Ideal Solution - is a methodological extension of AHP used to rank alternatives. It is based on the concept that the chosen alternative must have the shortest geometric distance from the positive ideal solution and the farthest geometric distance from the negative-ideal solution. 
+
+To further explore PV suitability within BC, TOPSIS was used to create an ordered ranking of all sites within the Thompson-Nicola Reginal District, allowing us to uncover the most optimal site within the region. 
+
+Explore the map below to see the ranking of sites across the Thompson-Nicola Regional District. 
+
+## Row {height="auto"}
+
+```{python}
+import folium
+import leafmap.foliumap as leafmap
+import requests
+import json
+
+# Define a rule-based color function
+def get_color(feature):
+    rank = feature['properties'].get('rank')
+    if rank <= 10:
+        return '#cb0909'  
+    elif rank > 10 and rank <= 100:
+        return '#ea5312'  
+    elif rank > 100 and rank <= 1000:
+        return '#fe9423'
+    else:
+        return '#FECC5C'  
+
+
+m = leafmap.Map(center=[51.000, -121.000], zoom=7)
+m.add_basemap("HYBRID")
+
+# Add thompson nicola boundary from GitHub
+bound_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/thompson_nicola.geojson" 
+bound = requests.get(bound_url).json()
+
+_ = folium.GeoJson(
+    bound,
+    name="Thompson-Nicola Boundary",
+    style_function=lambda x: {
+        "fillColor": "grey",
+        "fillOpacity": 0.0, 
+        "color": "#FCE32A",
+        "weight": 1.5,
+    },
+    control=True,
+).add_to(m)
+
+tn_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/tn_topsis.geojson" 
+tn = requests.get(tn_url).json()
+
+# Define tooltip columns (District Name + your 5 suitability classes)
+rank_cols = ["rank",
+            "Are_km2",
+            "cpct_MW",
+            "enrg_TW"]
+
+tooltip_aliases = ["Rank:",
+                   "Area (km²):",
+                   "Capacity (MW):",
+                   "Annual Energy (TWh):"]
+
+tn_tooltip = folium.GeoJsonTooltip(
+    fields=rank_cols,
+    aliases=tooltip_aliases,
+    localize=True,
+    labels=True,
+    sticky=False,  
+)
+
+_ = folium.GeoJson(
+    tn,
+    name="Thompson-Nicola Regional District TOPSIS Ranking",
+    tooltip=tn_tooltip,  
+    control=True,
+    style_function=lambda feature: {
+        'fillColor': get_color(feature),
+        'color': 'black',       
+        'weight': 0.5,           
+        'fillOpacity': 0.9
+}
+
+).add_to(m)
+
+# Layer control
+_ = folium.LayerControl().add_to(m)
+
+# Add custom legend using html
+legend_html = '''
+<div style="position: fixed; bottom: 50px; right: 50px; width: 220px; 
+     background-color: white; border:2px solid grey; z-index:9999; 
+     font-size:14px; padding: 10px">
+     <p style="margin: 0 0 10px 0; font-weight: bold;">TOPSIS Ranking</p>
+     <p style="margin: 5px 0;"><i style="background:#cb0909; width: 18px; height: 18px; 
+        float: left; margin-right: 8px; border-radius: 2px;"></i>Top 10 Sites</p>
+     <p style="margin: 5px 0;"><i style="background:#ea5312; width: 18px; height: 18px; 
+        float: left; margin-right: 8px; border-radius: 2px;"></i>Rank: 10-100</p>
+     <p style="margin: 5px 0;"><i style="background:#FD8D3C; width: 18px; height: 18px; 
+        float: left; margin-right: 8px; border-radius: 2px;"></i>Rank: 100-1000</p>
+     <p style="margin: 5px 0;"><i style="background:#FECC5C; width: 18px; height: 18px; 
+        float: left; margin-right: 8px; border-radius: 2px;"></i>Remaining Sites</p>
+</div>
+'''
+
+_ = m.get_root().html.add_child(folium.Element(legend_html))
+
+m
+```
