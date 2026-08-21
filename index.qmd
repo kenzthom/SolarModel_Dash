@@ -407,69 +407,6 @@ _ = folium.GeoJson(
     control=True,
 ).add_to(m)
 
-# Add 2 MW sites within municipal boundaries 
-inside_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/inside_muni_2MW.geojson" 
-inside = requests.get(inside_url).json()
-
-inside_tooltip = folium.GeoJsonTooltip(
-    fields=["AA_NAME", "area_acres", "cap_GW", "energy_TWh"],
-    aliases=["Municipality:", "Area (acres):", "Capacity (GW):", "Annual Energy (TWh):"],
-    localize=True,
-    labels=True,
-)
-
-_ = folium.GeoJson(
-    inside,
-    name="2MW Sites (Inside Municipal Boundaries)",
-    style_function=lambda x: {
-        "fillColor": "#004B28",
-        "fillOpacity": 0.9, 
-        "color": "black",
-        "weight": 1.0,
-    },
-    tooltip=inside_tooltip,
-    control=True,
-).add_to(m)
-
-# Add 100 MW sites outside of municipal boundaries
-outside_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/ouside_muni_100MW.geojson" 
-outside = requests.get(outside_url).json()
-
-outside_tooltip = folium.GeoJsonTooltip(
-    fields=["area_acres", "cap_GW", "energy_TWh"],
-    aliases=["Area (acres):", "Capacity (GW):", "Annual Energy (TWh):"],
-    localize=True,
-    labels=True,
-)
-
-_ = folium.GeoJson(
-    outside,
-    name="100MW Sites (Outside Municipal Boundaries)",
-    style_function=lambda x: {
-        "fillColor": "#A4E804",
-        "fillOpacity": 0.9, 
-        "color": "black",
-        "weight": 1.0,
-    },
-    tooltip=outside_tooltip,
-    control=True,
-).add_to(m)
-
-# Add custom legend for site layers
-legend_html = '''
-<div style="position: fixed; bottom: 50px; right: 50px; width: 260px; 
-     background-color: white; border:2px solid grey; z-index:9999; 
-     font-size:13px; padding: 12px; border-radius: 4px;">
-     <p style="margin: 0 0 10px 0; font-weight: bold; font-size: 14px;">Solar Development Sites</p>
-     <p style="margin: 5px 0;"><i style="background:#004B28; width: 18px; height: 18px; 
-        float: left; margin-right: 8px; border-radius: 2px;"></i>2 MW Sites (Inside Municipal)</p>
-     <p style="margin: 5px 0;"><i style="background:#A4E804; width: 18px; height: 18px; 
-        float: left; margin-right: 8px; border-radius: 2px;"></i>100 MW Sites (Outside Municipal)</p>
-</div>
-'''
-
-_ = m.get_root().html.add_child(folium.Element(legend_html))
-
 # Layer control
 _ = folium.LayerControl().add_to(m)
 

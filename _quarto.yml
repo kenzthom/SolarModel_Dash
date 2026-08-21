@@ -8,3 +8,7 @@ config:
 
 resources:
   - final_suitability_cog.tif
+
+format:
+  dashboard:
+    embed-resources: false
