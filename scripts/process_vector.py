@@ -18,7 +18,7 @@ tn_bound.to_file('data/thompson_nicola.geojson', driver='GeoJSON')
 print("Columns:", list(tn_bound.columns))
 
 # Thompson Nicola TOPSIS polygons
-tn = gpd.read_file('/Users/kenziethomson/Library/CloudStorage/OneDrive-UBC/RA/SolarModel_Guide/data/topsis/thompson_nicola_topsis_rankings2.shp')
+tn = gpd.read_file('/Users/kenziethomson/Library/CloudStorage/OneDrive-UBC/RA/SolarModel_Guide/data/topsis/TN_topsis_rankings.shp')
 tn = tn.to_crs(epsg=4326) 
 tn.to_file('data/tn_topsis.geojson', driver='GeoJSON')
 

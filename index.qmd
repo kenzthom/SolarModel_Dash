@@ -17,7 +17,7 @@ format:
 
 As electricity demand grows across British Columbia, more renewable energy installations need to be developed to support a resilient, diversified, low-carbon future. In light of this challenge, a site suitability analysis was undergone to create a province-wide screening tool that determines the most optimal locations for solar PV development.
 
-The [Analytic Hierarchy Process (AHP)](https://www.sciencedirect.com/science/article/pii/0270025587904738) was used to combine heterogeneous input criteria into a single, comprehensive suitability model. Through expert consultation with professionals across academia, policy, and industry, weights were assigned to each criteria representing their relative importance in the siting process. The following table outlines the criteria, definitions, and relative weights used to rank the province's landscape, providing a rigorous, data-driven foundation for our site selection analysis.
+The [Analytic Hierarchy Process (AHP)](https://www.sciencedirect.com/science/article/pii/0270025587904738) was used to combine heterogeneous input criteria into a single, comprehensive suitability model. Through expert consultation with professionals across academia, policy, and industry, weights were assigned to each criteria representing their relative importance in the siting process. The following table outlines the criteria, definitions, and weights used to rank the province's landscape, providing a rigorous, data-driven foundation for our site selection analysis.
 
 Explore the results below to see how the province's land base was classified into suitability classes, and how these classes are distributed across the province's regional districts.
 
@@ -311,9 +311,11 @@ fig
 
 **BC Solar Resource Overview**
 
-Technical potential translates suitable land area into electricity generation capabilities. We calculated installable capacity (GW) for each viable site using the parcel's area, a 23% panel efficiency, latitude-dependent Ground Cover Ratios, and a Packing Density Ratio. Annual energy yield draws from PVout (potential photovoltaic output) values for each site. Yield estimates are based on a 1 MW minimum production threshold, providing a realistic assessment of the province's solar energy potential ceiling. 
+Technical potential translates suitable land area into electricity generation capabilities. We calculated installable capacity (GW) for each viable site using the parcel's area, a 23% panel efficiency, latitude-dependent Ground Cover Ratios, and a Packing Density Ratio. Annual energy yield draws from PVout (potential photovoltaic output) values for each site. Yield estimates are based on a 1 MW minimum production threshold, providing a realistic assessment of the province's solar energy potential ceiling.
 
-Explore the map below to see the raw solar resource distribution across the province and total capacity and annual energy yield across BC's regional districts.
+To illustrate the spectrum of development opportunities, the map distinguishes between two development pathways: 2 MW distributed sites within municipal boundaries (representing community-scale installations) and 100 MW utility-scale sites outside municipal boundaries (representing large-scale installations). These dual pathways reflect BC's capacity to meet renewable energy targets through both distributed and centralized generation.
+
+Explore the map below to see the raw solar resource distribution across the province, viable site locations at different scales, and total capacity and annual energy yield across BC's regional districts.
 
 ```{python}
 #| title: "Photovoltaic Power Potential Map"
@@ -409,6 +411,13 @@ _ = folium.GeoJson(
 inside_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/inside_muni_2MW.geojson" 
 inside = requests.get(inside_url).json()
 
+inside_tooltip = folium.GeoJsonTooltip(
+    fields=["AA_NAME", "area_acres", "cap_GW", "energy_TWh"],
+    aliases=["Municipality:", "Area (acres):", "Capacity (GW):", "Annual Energy (TWh):"],
+    localize=True,
+    labels=True,
+)
+
 _ = folium.GeoJson(
     inside,
     name="2MW Sites (Inside Municipal Boundaries)",
@@ -418,12 +427,20 @@ _ = folium.GeoJson(
         "color": "black",
         "weight": 1.0,
     },
+    tooltip=inside_tooltip,
     control=True,
 ).add_to(m)
 
 # Add 100 MW sites outside of municipal boundaries
 outside_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/ouside_muni_100MW.geojson" 
 outside = requests.get(outside_url).json()
+
+outside_tooltip = folium.GeoJsonTooltip(
+    fields=["area_acres", "cap_GW", "energy_TWh"],
+    aliases=["Area (acres):", "Capacity (GW):", "Annual Energy (TWh):"],
+    localize=True,
+    labels=True,
+)
 
 _ = folium.GeoJson(
     outside,
@@ -434,8 +451,24 @@ _ = folium.GeoJson(
         "color": "black",
         "weight": 1.0,
     },
+    tooltip=outside_tooltip,
     control=True,
 ).add_to(m)
+
+# Add custom legend for site layers
+legend_html = '''
+<div style="position: fixed; bottom: 50px; right: 50px; width: 260px; 
+     background-color: white; border:2px solid grey; z-index:9999; 
+     font-size:13px; padding: 12px; border-radius: 4px;">
+     <p style="margin: 0 0 10px 0; font-weight: bold; font-size: 14px;">Solar Development Sites</p>
+     <p style="margin: 5px 0;"><i style="background:#004B28; width: 18px; height: 18px; 
+        float: left; margin-right: 8px; border-radius: 2px;"></i>2 MW Sites (Inside Municipal)</p>
+     <p style="margin: 5px 0;"><i style="background:#A4E804; width: 18px; height: 18px; 
+        float: left; margin-right: 8px; border-radius: 2px;"></i>100 MW Sites (Outside Municipal)</p>
+</div>
+'''
+
+_ = m.get_root().html.add_child(folium.Element(legend_html))
 
 # Layer control
 _ = folium.LayerControl().add_to(m)
@@ -448,7 +481,7 @@ m
 ```{python}
 #| content: valuebox  
 #| title: "Total area of suitable sites in BC (km²)"
-#| color: "#7DA1B0" 
+#| color: "#a4c3d0" 
 #| icon: "globe-americas"
 
 dict(value = 2844.4)
@@ -457,7 +490,7 @@ dict(value = 2844.4)
 ```{python}
 #| content: valuebox
 #| title: "Installable Capacity (GW)"
-#| color: "#5B7884" 
+#| color: "#7396a5" 
 #| icon: "sun-fill"
 
 import pandas as pd
@@ -472,7 +505,7 @@ dict(value = f"{total_capacity_GW:,.1f}")
 ```{python}
 #| content: valuebox
 #| title: "Annual Energy Yield (TWh/year)"
-#| color: "#7D7F80" 
+#| color: "#5B7884"
 #| icon: "lightning-fill"
 
 import pandas as pd
@@ -484,17 +517,17 @@ total_energy = df["total_energy_TWh"].sum()
 dict(value = f"{total_energy:.1f}")
 ```
 
-# Case Study: Thompson-Nicola
+# Case Study: Thompson-Nicola Regional District
 
 ## Row {height="auto"}
 
 **Ranking Sites with TOPSIS**
 
-TOPSIS - Technique for Order of Preference by Similarity to Ideal Solution - is a methodological extension of AHP used to rank alternatives. It is based on the concept that the chosen alternative must have the shortest geometric distance from the positive ideal solution and the farthest geometric distance from the negative-ideal solution. 
+TOPSIS – Technique for Order of Preference by Similarity to Ideal Solution – is a methodological extension of AHP used to rank alternatives based on their geometric distance from ideal and non-ideal solutions. This approach identifies sites that simultaneously maximize desirable criteria (e.g., high irradiance, proximity to substations) while minimizing undesirable ones (e.g., steep terrain, north facing aspects).
 
-To further explore PV suitability within BC, TOPSIS was used to create an ordered ranking of all sites within the Thompson-Nicola Reginal District, allowing us to uncover the most optimal site within the region. 
+We applied TOPSIS to the Thompson-Nicola Regional District as a detailed case study, ranking all eligible sites within the region to identify priority development locations. Notably, the top-ranked site aligns with the location of the proposed Nicola Lake Solar Farm, validating the methodology's capacity to identify viable development opportunities. This analysis demonstrates how the suitability framework translates into actionable site-level investment decisions at the regional scale.
 
-Explore the map below to see the ranking of sites across the Thompson-Nicola Regional District. 
+Explore the map below to see the ranked sites across the Thompson-Nicola Regional District, with top-ranked sites indicating the strongest candidates for development.
 
 ## Row {height="auto"}
 
