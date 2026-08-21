@@ -1,1 +1,6 @@
-docs/index.html
+docs/
+dashboard_files/
+.DS_Store
+.gitattributes
+dashboard.html
+gitignore
