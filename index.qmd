@@ -123,7 +123,6 @@ _ = folium.TileLayer(
 
 # Add Regional Districts from GitHub
 rd_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/regional_districts_with_stats.geojson" 
-rd = requests.get(rd_url).json()
 
 # Define tooltip columns (District Name + your 5 suitability classes)
 suitability_cols = [
@@ -152,7 +151,8 @@ district_tooltip = folium.GeoJsonTooltip(
 )
 
 _ = folium.GeoJson(
-    rd,
+    rd_url,
+    embed=False,
     name="Regional Districts",
     style_function=lambda x: {
         "fillColor": "grey",
@@ -373,7 +373,6 @@ _ = colormap.add_to(m)
 
 # Add Regional Districts from GitHub
 rd_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/regional_districts_with_stats.geojson" 
-rd = requests.get(rd_url).json()
 
 # Define tooltip columns (District Name + your 5 suitability classes)
 yield_cols = [
@@ -395,7 +394,8 @@ district_tooltip = folium.GeoJsonTooltip(
 )
 
 _ = folium.GeoJson(
-    rd,
+    rd_url,
+    embed=False,
     name="Regional Districts",
     style_function=lambda x: {
         "fillColor": "grey",
@@ -406,6 +406,66 @@ _ = folium.GeoJson(
     tooltip=district_tooltip,  
     control=True,
 ).add_to(m)
+
+# Add 2 MW sites within municipal boundaries 
+inside_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/inside_muni_2MW.geojson" 
+
+inside_tooltip = folium.GeoJsonTooltip(
+    fields=["AA_NAME", "area_acres", "cap_GW", "energy_TWh"],
+    aliases=["Municipality:", "Area (acres):", "Capacity (GW):", "Annual Energy (TWh):"],
+    localize=True,
+    labels=True,
+)
+_ = folium.GeoJson(
+    inside_url,
+    embed=True,
+    name="2MW Sites (Inside Municipal Boundaries)",
+    style_function=lambda x: {
+        "fillColor": "#004B28",
+        "fillOpacity": 0.9, 
+        "color": "black",
+        "weight": 1.0,
+    },
+    tooltip=inside_tooltip,
+    control=True,
+).add_to(m)
+
+# Add 100 MW sites outside of municipal boundaries
+outside_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/ouside_muni_100MW.geojson" 
+
+outside_tooltip = folium.GeoJsonTooltip(
+    fields=["area_acres", "cap_GW", "energy_TWh"],
+    aliases=["Area (acres):", "Capacity (GW):", "Annual Energy (TWh):"],
+    localize=True,
+    labels=True,
+)
+_ = folium.GeoJson(
+    outside_url,
+    embed=True,
+    name="100MW Sites (Outside Municipal Boundaries)",
+    style_function=lambda x: {
+        "fillColor": "#A4E804",
+        "fillOpacity": 0.9, 
+        "color": "black",
+        "weight": 1.0,
+    },
+    tooltip=outside_tooltip,
+    control=True,
+).add_to(m)
+
+# Add custom legend for site layers
+legend_html = '''
+<div style="position: fixed; bottom: 50px; right: 50px; width: 260px; 
+     background-color: white; border:2px solid grey; z-index:9999; 
+     font-size:13px; padding: 12px; border-radius: 4px;">
+     <p style="margin: 0 0 10px 0; font-weight: bold; font-size: 14px;">Solar Development Sites</p>
+     <p style="margin: 5px 0;"><i style="background:#004B28; width: 18px; height: 18px; 
+        float: left; margin-right: 8px; border-radius: 2px;"></i>2 MW Sites (Inside Municipal)</p>
+     <p style="margin: 5px 0;"><i style="background:#A4E804; width: 18px; height: 18px; 
+        float: left; margin-right: 8px; border-radius: 2px;"></i>100 MW Sites (Outside Municipal)</p>
+</div>
+'''
+_ = m.get_root().html.add_child(folium.Element(legend_html))
 
 # Layer control
 _ = folium.LayerControl().add_to(m)
@@ -473,6 +533,7 @@ import folium
 import leafmap.foliumap as leafmap
 import requests
 import json
+import geopandas as gpd
 
 # Define a rule-based color function
 def get_color(feature):
@@ -491,11 +552,11 @@ m = leafmap.Map(center=[51.000, -121.000], zoom=7)
 m.add_basemap("HYBRID")
 
 # Add thompson nicola boundary from GitHub
-bound_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/thompson_nicola.geojson" 
-bound = requests.get(bound_url).json()
+bound_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/thompson_nicola.geojson"
 
 _ = folium.GeoJson(
-    bound,
+    bound_url,
+    embed=False,
     name="Thompson-Nicola Boundary",
     style_function=lambda x: {
         "fillColor": "grey",
@@ -507,7 +568,6 @@ _ = folium.GeoJson(
 ).add_to(m)
 
 tn_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/tn_topsis.geojson" 
-tn = requests.get(tn_url).json()
 
 # Define tooltip columns (District Name + your 5 suitability classes)
 rank_cols = ["rank",
@@ -529,7 +589,8 @@ tn_tooltip = folium.GeoJsonTooltip(
 )
 
 _ = folium.GeoJson(
-    tn,
+    tn_url,
+    embed=False, 
     name="Thompson-Nicola Regional District TOPSIS Ranking",
     tooltip=tn_tooltip,  
     control=True,
