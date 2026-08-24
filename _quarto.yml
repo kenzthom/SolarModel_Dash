@@ -6,9 +6,6 @@ config:
   project:
     quarto-python: "/Users/kenziethomson/Documents/SolarModel_Dash/dashboard_env/lib/python3.14/site-packages"
 
-resources:
-  - final_suitability_cog.tif
-
 format:
   dashboard:
     embed-resources: false

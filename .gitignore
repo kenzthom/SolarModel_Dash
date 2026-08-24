@@ -1,9 +1,13 @@
-docs/
-dashboard_files/
+# Python environment & local system files
+dashboard_env/
 .DS_Store
-.gitattributes
-dashboard.html
-gitignore
+.vscode/
 .quarto/
 
-/.quarto/
+# Raw tiffs
+*.tif
+!*_cog.tif
+
+# Local render artifacts
+dashboard.html
+dashboard_files/
