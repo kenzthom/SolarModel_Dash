@@ -11,3 +11,4 @@ dashboard_env/
 # Local render artifacts
 dashboard.html
 dashboard_files/
+/.quarto/

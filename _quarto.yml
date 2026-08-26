@@ -2,6 +2,9 @@ project:
   type: website
   output-dir: docs
 
+resources:
+  - documents/executive_summary.pdf
+
 config:
   project:
     quarto-python: "/Users/kenziethomson/Documents/SolarModel_Dash/dashboard_env/lib/python3.14/site-packages"

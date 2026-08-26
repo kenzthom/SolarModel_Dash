@@ -11,17 +11,25 @@ format:
 
 ## Row {height="auto"}
 
-### Column {width="46%"}
+### Column {width="65%"}
 
-**Project Overview**
+<span style="font-size: 2rem;font-weight: bold">Analysis Overview</span>
 
 As electricity demand grows across British Columbia, more renewable energy installations need to be developed to support a resilient, diversified, low-carbon future. In light of this challenge, a site suitability analysis was undergone to create a province-wide screening tool that determines the most optimal locations for solar PV development.
 
 The [Analytic Hierarchy Process (AHP)](https://www.sciencedirect.com/science/article/pii/0270025587904738) was used to combine heterogeneous input criteria into a single, comprehensive suitability model. Through expert consultation with professionals across academia, policy, and industry, weights were assigned to each criteria representing their relative importance in the siting process. The following table outlines the criteria, definitions, and weights used to rank the province's landscape, providing a rigorous, data-driven foundation for our site selection analysis.
 
-Explore the results below to see how the province's land base was classified into suitability classes, and how these classes are distributed across the province's regional districts.
+Prior to criteria weighting, a land constraint layer was applied to exclude restricted areas from the analysis, including:
 
-### Column {width="54%"}
+* Protected and Conserved Areas: Provincial/federal parks, ecological reserves, and protected watersheds.
+* Unsuitable Land Covers: Water bodies, wetlands, permanent snow and ice, and artificial/built environments 
+* Dense Forests: stands with a canopy cover greater than 40% 
+* Agricultural Land Reserve: Filtered to Soil Capability Classes 1-3
+* Linear Infrastructure: All roads and railways
+
+Explore the map below to see how the distribition of land constraints and suitability classes across the province, along side the locations of BC's 12 existing solar installations. 
+
+### Column {width="35%"}
 
 ```{python}
 #| echo: false
@@ -41,12 +49,12 @@ df = pd.DataFrame({
         "Ground Slope",
     ],
     "Impact/Definition": [
-        "High-voltage power infrastructure is expensive to build. The closer the site is to existing substations, the more profitable it is.",
-        "The solar energy hitting an optimally tilted solar panel.",
-        "Producing power closer to where it is used reduces energy wasted during transport.",
-        "Arterial roads are needed to transport solar panels and structural components. Siting close to roads minimizes transit times and reduces construction costs.",
-        "The direction a hill faces. In the Northern Hemisphere, south-facing slopes receive more insolation.",
-        "Flat land is less expensive to build on and steeper land causes panels to shadow one another.",
+        "High-voltage transmission infrastructure is expensive to construct. Proximity to existing substations minimizes interconnection costs and improves project economics",
+        "The total solar radiation received by a panel tilted toward the sun, accounting for direct, diffuse, and ground-reflected light",
+        "Siting generation near major load centers minimizes transmission line losses and reduces grid congestion",
+        "Proximity to transportation networks lowers site construction costs, simplifies heavy equipment haulage, and ensures long-term operational access",
+        "Topographic orientation relative to the sun. In the Northern Hemisphere, south-facing slopes maximize annual solar energy yield",
+        "Terrain steepness. Gentle or flat terrain minimizes civil grading costs, simplifies tracker/mounting installation, and prevents inter-row panel shading",
     ],
     "Weight": ["30.2%", "26.3%", "14.4%", "11.2%", "9.3%", "8.5%"],
 })
@@ -190,7 +198,7 @@ labels = [
     "2 - Less Suitable",
     "3 - Moderately Suitable",
     "4 - Suitable",
-    "5 - Very Suitable"
+    "5 - Most Suitable"
 ]
 
 m.add_legend(title="Suitability Classes", colors=colors, labels=labels) 
@@ -309,13 +317,13 @@ fig
 
 ### Column {width ="75%"}
 
-**BC Solar Resource Overview**
+<span style="font-size: 2rem;font-weight: bold">Solar Resource Potential</span>
 
 Technical potential translates suitable land area into electricity generation capabilities. We calculated installable capacity (GW) for each viable site using the parcel's area, a 23% panel efficiency, latitude-dependent Ground Cover Ratios, and a Packing Density Ratio. Annual energy yield draws from PVout (potential photovoltaic output) values for each site. Yield estimates are based on a 1 MW minimum production threshold, providing a realistic assessment of the province's solar energy potential ceiling.
 
-To illustrate the spectrum of development opportunities, the map distinguishes between two development pathways: 2 MW distributed sites within municipal boundaries (representing community-scale installations) and 100 MW utility-scale sites outside municipal boundaries (representing large-scale installations). These dual pathways reflect BC's capacity to meet renewable energy targets through both distributed and centralized generation.
+To illustrate the spectrum of development opportunities, the map distinguishes between two development pathways: +2 MW sites within municipal boundaries (community-scale installations) and +100 MW sites outside municipal boundaries (utility-scale installations). These dual pathways reflect BC's capacity to meet renewable energy targets through both distributed and centralized generation.
 
-Explore the map below to see the raw solar resource distribution across the province, viable site locations at different scales, and total capacity and annual energy yield across BC's regional districts.
+Explore the map below to see the raw photovoltaic resource distribution across the province, viable site locations at different scales, and total capacity and annual energy yield across BC's regional districts.
 
 ```{python}
 #| title: "Photovoltaic Power Potential Map"
@@ -371,6 +379,30 @@ colormap = LinearColormap(
 
 _ = colormap.add_to(m)
 
+
+# Add Municipalities from GitHub
+munis_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/municipalities.geojson" 
+
+munis_tooltip = folium.GeoJsonTooltip(
+    fields=["AA_NAME"],
+    aliases=["Municipality:"],
+    localize=True,
+    labels=True)
+
+_ = folium.GeoJson(
+    munis_url,
+    embed=False,
+    name="Municipalities",
+    style_function=lambda x: {
+        "fillColor": "grey",
+        "fillOpacity": 0.0, 
+        "color": "#FCE32A",
+        "weight": 1.5,
+    },
+    tooltip=munis_tooltip,  
+    control=True,
+).add_to(m)
+
 # Add Regional Districts from GitHub
 rd_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/regional_districts_with_stats.geojson" 
 
@@ -414,8 +446,8 @@ inside_tooltip = folium.GeoJsonTooltip(
     fields=["AA_NAME", "area_acres", "cap_GW", "energy_TWh"],
     aliases=["Municipality:", "Area (acres):", "Capacity (GW):", "Annual Energy (TWh):"],
     localize=True,
-    labels=True,
-)
+    labels=True)
+
 _ = folium.GeoJson(
     inside_url,
     embed=True,
@@ -437,8 +469,8 @@ outside_tooltip = folium.GeoJsonTooltip(
     fields=["area_acres", "cap_GW", "energy_TWh"],
     aliases=["Area (acres):", "Capacity (GW):", "Annual Energy (TWh):"],
     localize=True,
-    labels=True,
-)
+    labels=True)
+
 _ = folium.GeoJson(
     outside_url,
     embed=True,
@@ -460,9 +492,9 @@ legend_html = '''
      font-size:13px; padding: 12px; border-radius: 4px;">
      <p style="margin: 0 0 10px 0; font-weight: bold; font-size: 14px;">Solar Development Sites</p>
      <p style="margin: 5px 0;"><i style="background:#004B28; width: 18px; height: 18px; 
-        float: left; margin-right: 8px; border-radius: 2px;"></i>2 MW Sites (Inside Municipal)</p>
+        float: left; margin-right: 8px; border-radius: 2px;"></i>2 MW Sites (Inside Municipality)</p>
      <p style="margin: 5px 0;"><i style="background:#A4E804; width: 18px; height: 18px; 
-        float: left; margin-right: 8px; border-radius: 2px;"></i>100 MW Sites (Outside Municipal)</p>
+        float: left; margin-right: 8px; border-radius: 2px;"></i>100 MW Sites (Outside Municipality)</p>
 </div>
 '''
 _ = m.get_root().html.add_child(folium.Element(legend_html))
@@ -477,7 +509,7 @@ m
 
 ```{python}
 #| content: valuebox  
-#| title: "Total area of suitable sites in BC (km²)"
+#| title: "Area of suitable sites in BC (km²)"
 #| color: "#a4c3d0" 
 #| icon: "globe-americas"
 
@@ -518,7 +550,7 @@ dict(value = f"{total_energy:.1f}")
 
 ## Row {height="auto"}
 
-**Ranking Sites with TOPSIS**
+<span style="font-size: 2rem;font-weight: bold">From Screening to Site Selection</span>
 
 TOPSIS – Technique for Order of Preference by Similarity to Ideal Solution – is a methodological extension of AHP used to rank alternatives based on their geometric distance from ideal and non-ideal solutions. This approach identifies sites that simultaneously maximize desirable criteria (e.g., high irradiance, proximity to substations) while minimizing undesirable ones (e.g., steep terrain, north facing aspects).
 
@@ -526,9 +558,76 @@ We applied TOPSIS to the Thompson-Nicola Regional District as a detailed case st
 
 Explore the map below to see the ranked sites across the Thompson-Nicola Regional District, with top-ranked sites indicating the strongest candidates for development.
 
-## Row {height="auto"}
+## Row
+
+### Column {width=30%}
 
 ```{python}
+#| title: Top 10 Ranked Sites
+
+import geopandas as gpd
+
+tn_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/tn_topsis.geojson" 
+munis_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/municipalities.geojson"
+
+sites = gpd.read_file(tn_url)
+munis = gpd.read_file(munis_url) 
+
+# Filter top 10 sites
+sites = sites.sort_values(by='rank', ascending=True).head(10).copy() 
+
+# Reproject to epsg=3005 for distance calc
+sites_proj = sites.to_crs(epsg=3005)
+munis_proj = munis.to_crs(epsg=3005)
+
+# Use spatial join to find muni closest to each top 10 site
+joined = gpd.sjoin_nearest(
+    sites_proj,
+    munis_proj[['AA_NAME', 'geometry']],
+    how='left'
+)
+
+# Make clean summary 
+sites_summary = (
+    joined[['rank', 'cpct_MW', 'enrg_TW', 'AA_NAME_right']]
+    .round(1)
+    .rename(columns={
+        "rank": "Site Rank",
+        "cpct_MW": "Capacity (MW)",
+        "enrg_TW": "Annual Energy (TWh)",
+        "AA_NAME_right": "Nearest Municipality"
+    })
+)
+
+# Make appearence match first page table
+table = (
+    GT(sites_summary)
+    # Bold column headers
+    .tab_style( 
+        style=style.text(weight="bold"),
+        locations=loc.column_labels()
+    )
+    # Center column headers 
+    .tab_style(
+        style=style.text(align="center"),
+        locations=loc.column_labels()
+    )
+    # Fill column headers with a light blue color
+    .tab_style(
+        style=style.fill(color="#5b89aad2"),
+        locations=loc.column_labels()
+    )
+)
+
+table
+```
+
+### Column {width="70%"}
+
+```{python}
+#| title: "Ranking of Suitable Sites within TNRD"
+#| echo: false
+
 import folium
 import leafmap.foliumap as leafmap
 import requests

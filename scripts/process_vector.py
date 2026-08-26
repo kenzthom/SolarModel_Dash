@@ -45,3 +45,10 @@ solar.to_file('data/renewable_energy_points.geojson', driver='GeoJSON')
 
 print("Columns:", list(solar.columns))
 
+# Municipalities
+
+munis = gpd.read_file('/Users/kenziethomson/Library/CloudStorage/OneDrive-UBC/RA/Data/Admin Boundaries/municipalities.shp')
+munis = munis.to_crs(epsg=4326)
+munis.to_file('data/municipalities.geojson', driver='GeoJSON')
+
+print("Columns:", list(munis.columns))
