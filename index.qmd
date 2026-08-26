@@ -513,7 +513,7 @@ m
 #| color: "#a4c3d0" 
 #| icon: "globe-americas"
 
-dict(value = 2844.4)
+dict(value = 2844)
 ```
 
 ```{python}
@@ -528,7 +528,7 @@ df = pd.read_csv("https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/mai
 
 total_capacity_GW = df["total_capacity_GW"].sum()
 
-dict(value = f"{total_capacity_GW:,.1f}")
+dict(value = f"{total_capacity_GW:,.0f}")
 ```
 
 ```{python}
@@ -543,7 +543,7 @@ df = pd.read_csv("https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/mai
 
 total_energy = df["total_energy_TWh"].sum()
 
-dict(value = f"{total_energy:.1f}")
+dict(value = f"{total_energy:.0f}")
 ```
 
 # Case Study: Thompson-Nicola Regional District
@@ -563,7 +563,7 @@ Explore the map below to see the ranked sites across the Thompson-Nicola Regiona
 ### Column {width=30%}
 
 ```{python}
-#| title: Top 10 Ranked Sites
+#| title: "Top 10 Development Sites"
 
 import geopandas as gpd
 
@@ -625,7 +625,7 @@ table
 ### Column {width="70%"}
 
 ```{python}
-#| title: "Ranking of Suitable Sites within TNRD"
+#| title: "TNRD PV Site Ranking Map"
 #| echo: false
 
 import folium
