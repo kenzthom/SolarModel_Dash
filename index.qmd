@@ -255,6 +255,11 @@ fig = (px.bar(
     yaxis_title="Area (km²)",
     showlegend=False,
     hovermode='x unified'
+)
+# Tilt text so x axis labels dont everylap
+.update_xaxes(
+    tickangle=-30,  
+    automargin=True 
 ))
 
 fig
@@ -403,42 +408,6 @@ _ = folium.GeoJson(
     control=True,
 ).add_to(m)
 
-# Add Regional Districts from GitHub
-rd_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/regional_districts_with_stats.geojson" 
-
-# Define tooltip columns (District Name + your 5 suitability classes)
-yield_cols = [
-    "total_capacity_GW",
-    "total_energy_TWh"]
-
-tooltip_aliases = [
-    "District:",
-    "Installable Capacity (GW):",
-    "Annual Energy Yield (TWh/year):"
-]
-
-district_tooltip = folium.GeoJsonTooltip(
-    fields=["district_name"] + yield_cols,
-    aliases=tooltip_aliases,
-    localize=True,
-    labels=True,
-    sticky=False,  
-)
-
-_ = folium.GeoJson(
-    rd_url,
-    embed=False,
-    name="Regional Districts",
-    style_function=lambda x: {
-        "fillColor": "grey",
-        "fillOpacity": 0.0, 
-        "color": "black",
-        "weight": 1.5,
-    },
-    tooltip=district_tooltip,  
-    control=True,
-).add_to(m)
-
 # Add 2 MW sites within municipal boundaries 
 inside_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/inside_muni_2MW.geojson" 
 
@@ -482,6 +451,42 @@ _ = folium.GeoJson(
         "weight": 1.0,
     },
     tooltip=outside_tooltip,
+    control=True,
+).add_to(m)
+
+# Add Regional Districts from GitHub
+rd_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/regional_districts_with_stats.geojson" 
+
+# Define tooltip columns (District Name + your 5 suitability classes)
+yield_cols = [
+    "total_capacity_GW",
+    "total_energy_TWh"]
+
+tooltip_aliases = [
+    "District:",
+    "Installable Capacity (GW):",
+    "Annual Energy Yield (TWh/year):"
+]
+
+district_tooltip = folium.GeoJsonTooltip(
+    fields=["district_name"] + yield_cols,
+    aliases=tooltip_aliases,
+    localize=True,
+    labels=True,
+    sticky=False,  
+)
+
+_ = folium.GeoJson(
+    rd_url,
+    embed=False,
+    name="Regional Districts",
+    style_function=lambda x: {
+        "fillColor": "grey",
+        "fillOpacity": 0.0, 
+        "color": "black",
+        "weight": 1.5,
+    },
+    tooltip=district_tooltip,  
     control=True,
 ).add_to(m)
 
@@ -554,17 +559,15 @@ dict(value = f"{total_energy:.0f}")
 
 TOPSIS – Technique for Order of Preference by Similarity to Ideal Solution – is a methodological extension of AHP used to rank alternatives based on their geometric distance from ideal and non-ideal solutions. This approach identifies sites that simultaneously maximize desirable criteria (e.g., high irradiance, proximity to substations) while minimizing undesirable ones (e.g., steep terrain, north facing aspects).
 
-We applied TOPSIS to the Thompson-Nicola Regional District as a detailed case study, ranking all eligible sites within the region to identify priority development locations. Notably, the top-ranked site aligns with the location of the proposed Nicola Lake Solar Farm, validating the methodology's capacity to identify viable development opportunities. This analysis demonstrates how the suitability framework translates into actionable site-level investment decisions at the regional scale.
+We applied TOPSIS to the Thompson-Nicola Regional District (TNRD) as a detailed case study, ranking all eligible sites within the region to identify priority development locations. Notably, the top-ranked site aligns with the location of the proposed Nicola Lake Solar Farm, validating the methodology's capacity to identify viable development opportunities. This analysis demonstrates how the suitability framework translates into actionable site-level investment decisions at the regional scale. 
 
-Explore the map below to see the ranked sites across the Thompson-Nicola Regional District, with top-ranked sites indicating the strongest candidates for development.
+Explore the map and table below to see the ranked sites across the Thompson-Nicola Regional District, with top-ranked sites indicating the strongest candidates for development.
 
 ## Row
 
 ### Column {width=30%}
 
 ```{python}
-#| title: "Top 10 Development Sites"
-
 import geopandas as gpd
 
 tn_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/tn_topsis.geojson" 
@@ -605,11 +608,6 @@ table = (
     # Bold column headers
     .tab_style( 
         style=style.text(weight="bold"),
-        locations=loc.column_labels()
-    )
-    # Center column headers 
-    .tab_style(
-        style=style.text(align="center"),
         locations=loc.column_labels()
     )
     # Fill column headers with a light blue color
