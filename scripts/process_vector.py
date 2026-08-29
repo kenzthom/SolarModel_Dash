@@ -4,7 +4,7 @@ import geopandas as gpd
 import pandas as pd
 
 # Regional districts
-rd = gpd.read_file('/Users/kenziethomson/Library/CloudStorage/OneDrive-UBC/RA/Data/Admin Boundaries/RegionalDistrict_Final.shp')
+rd = gpd.read_file('/Users/kenziethomson/Library/CloudStorage/OneDrive-UBC/RA/SolarModel_Guide/data/admin boundaries/RegionalDistrict_Final.shp')
 rd = rd.to_crs(epsg=4326)
 rd.to_file('data/RegionalDistricts_Final.geojson', driver='GeoJSON')
 

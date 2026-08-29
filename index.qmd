@@ -412,8 +412,8 @@ _ = folium.GeoJson(
 inside_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/inside_muni_2MW.geojson" 
 
 inside_tooltip = folium.GeoJsonTooltip(
-    fields=["AA_NAME", "area_acres", "cap_GW", "energy_TWh"],
-    aliases=["Municipality:", "Area (acres):", "Capacity (GW):", "Annual Energy (TWh):"],
+    fields=["Area_km2", "cap_MW", "energy_TWh"],
+    aliases=["Area (km²):", "Capacity (MW):", "Annual Energy (TWh):"],
     localize=True,
     labels=True)
 
@@ -435,8 +435,8 @@ _ = folium.GeoJson(
 outside_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/ouside_muni_100MW.geojson" 
 
 outside_tooltip = folium.GeoJsonTooltip(
-    fields=["area_acres", "cap_GW", "energy_TWh"],
-    aliases=["Area (acres):", "Capacity (GW):", "Annual Energy (TWh):"],
+    fields=["Area_km2", "cap_MW", "energy_TWh"],
+    aliases=["Area (km²):", "Capacity (MW):", "Annual Energy (TWh):"],
     localize=True,
     labels=True)
 
@@ -457,7 +457,7 @@ _ = folium.GeoJson(
 # Add Regional Districts from GitHub
 rd_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/regional_districts_with_stats.geojson" 
 
-# Define tooltip columns (District Name + your 5 suitability classes)
+# Define tooltip columns 
 yield_cols = [
     "total_capacity_GW",
     "total_energy_TWh"]
@@ -485,6 +485,7 @@ _ = folium.GeoJson(
         "fillOpacity": 0.0, 
         "color": "black",
         "weight": 1.5,
+        "pointer-events": "none",
     },
     tooltip=district_tooltip,  
     control=True,
@@ -497,9 +498,9 @@ legend_html = '''
      font-size:13px; padding: 12px; border-radius: 4px;">
      <p style="margin: 0 0 10px 0; font-weight: bold; font-size: 14px;">Solar Development Sites</p>
      <p style="margin: 5px 0;"><i style="background:#004B28; width: 18px; height: 18px; 
-        float: left; margin-right: 8px; border-radius: 2px;"></i>2 MW Sites (Inside Municipality)</p>
+        float: left; margin-right: 8px; border-radius: 2px;"></i>+2 MW Sites (Inside Municipality)</p>
      <p style="margin: 5px 0;"><i style="background:#A4E804; width: 18px; height: 18px; 
-        float: left; margin-right: 8px; border-radius: 2px;"></i>100 MW Sites (Outside Municipality)</p>
+        float: left; margin-right: 8px; border-radius: 2px;"></i>+100 MW Sites (Outside Municipality)</p>
 </div>
 '''
 _ = m.get_root().html.add_child(folium.Element(legend_html))
@@ -592,11 +593,11 @@ joined = gpd.sjoin_nearest(
 
 # Make clean summary 
 sites_summary = (
-    joined[['rank', 'cpct_MW', 'enrg_TW', 'AA_NAME_right']]
-    .round(1)
+    joined[['rank', 'cap_MW', 'enrg_TW', 'AA_NAME_right']]
+    .round(2)
     .rename(columns={
         "rank": "Site Rank",
-        "cpct_MW": "Capacity (MW)",
+        "cap_MW": "Capacity (MW)",
         "enrg_TW": "Annual Energy (TWh)",
         "AA_NAME_right": "Nearest Municipality"
     })
@@ -669,7 +670,7 @@ tn_url = "https://raw.githubusercontent.com/kenzthom/SolarModel_Dash/main/data/t
 # Define tooltip columns (District Name + your 5 suitability classes)
 rank_cols = ["rank",
             "Are_km2",
-            "cpct_MW",
+            "cap_MW",
             "enrg_TW"]
 
 tooltip_aliases = ["Rank:",
